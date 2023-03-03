@@ -4,12 +4,13 @@ rm -rf student-submission
 git clone $1 student-submission
 echo 'Finished cloning'
 
-FILE=`find student-submission -name "ListExamples.java"`
+FILE=`find student-submission -name "ListExamples.java" -maxdepth 1`
 if [[ -f $FILE ]] && [[ $FILE = *ListExamples.java* ]]
 then
     echo 'ListExamples.java file exists.'
 else
     echo "ListExamples.java file does not exist."
+    exit 1
 fi
 
 cd student-submission
@@ -21,12 +22,13 @@ javac -cp .:lib/hamcrest-core-1.3.jar:lib/junit-4.13.2.jar *.java &> ../output-c
 java -cp .:lib/hamcrest-core-1.3.jar:lib/junit-4.13.2.jar org.junit.runner.JUnitCore TestListExamples &> ../output-runtime.txt
 
 EXIST_METHOD1=`grep -c "static List<String> filter(List<String> list, StringChecker sc)" ListExamples.java`
+
 EXIST_METHOD2=`grep -c "static List<String> merge(List<String> list1, List<String> list2)" ListExamples.java`
 
 cd ..
 
-INFO=`grep -i "ListExamples.java" output-compiler.txt`
-FAIL=`grep -i -c "FAILURE" output-runtime.txt`
+INFO=`grep -i "ListExamples.java" output-compiler.txt` 
+FAIL=`grep -i -c "FAILURE" output-runtime.txt` 
 SUCC=`grep -i -c "OK" output-runtime.txt`
 
 if [[ $EXIST_METHOD1 -gt 0 ]]
@@ -54,6 +56,7 @@ then
     echo "Test cases succeeded."
 else
     echo "Something went wrong."
+
 fi
 
 
