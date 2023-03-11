@@ -1,6 +1,6 @@
 CPATH='.:lib/hamcrest-core-1.3.jar:lib/junit-4.13.2.jar'
 
-TESTCNT=0
+let TESTCNT=0
 rm -rf student-submission
 git clone $1 student-submission
 echo 'Finished cloning'
@@ -11,13 +11,13 @@ FILE=`find student-submission -name "ListExamples.java" -maxdepth 1`
 if [[ -f $FILE ]] && [[ $FILE = *ListExamples.java* ]]
 then
     echo 'ListExamples.java file exists.'
+    let TESTCNT++
 else
     echo "ListExamples.java file does not exist."
     echo "Score: (0/5)"
     exit 1
 fi
 
-TESTCNT=$TESTCNT+1
 
 cd student-submission
 
@@ -42,26 +42,26 @@ SUCC=`grep -i -c "OK" output-runtime.txt`
 if [[ $EXIST_METHOD1 -gt 0 ]]
 then
 	echo "Method Signature one is OK!!!"
+    let TESTCNT++
 else
     echo "Method signature one is WRONG!!!"
     echo "Score: (1/5)"
     exit 1
 fi
 
-TESTCNT=$TESTCNT+1
 
 # TEST 3
 
 if [[ $EXIST_METHOD2 -gt 0 ]]
 then
     echo "Method Signature two is OK!!!"
+    let TESTCNT++
 else
     echo "Method Signature two is WRONG!!!"
     echo "Score: (2/5)"
     exit 1
 fi
 
-TESTCNT=$TESTCNT+1
 
 # TEST 4 and 5
 
@@ -69,22 +69,25 @@ if [[ $INFO ]]
 then
     echo $INFO "- COMPILER ERROR!!!"
     echo "Score: (3/5)"
-elif [[ $FAIL -gt 0 ]]
+else
+    let TESTCNT++
+fi
+
+if [[ $FAIL -gt 0 ]]
 then
     echo "Test cases failed. - RUNTIME ERROR!!!"
     echo "Score: (4/5)"
 elif [[ $SUCC -gt 0 ]]
 then
     echo "Test cases succeeded."
-    echo "Score: (5/5)"
+    let TESTCNT++
 else
     echo "Something went wrong."
     echo "Score: (4/5)"
 fi
 
-TESTCNT=$TESTCNT+1
 
-echo "TOTAL SCORE: $TESTCNT/5 !!!!!"
+echo "All tests completed with a score of $TESTCNT/5!"
 
 
 
